@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
@@ -45,9 +46,9 @@ namespace RFID_tracking_API.Controllers {
 
             Tags.AddRange(tagPacket);
 
-            // Keep 20 newest readings
-            Tags = Tags.OrderByDescending(x => x.LastSeenTimestampUTC).ToList();
-            if (Tags.Count > 20) { Tags.RemoveRange(0, Tags.Count - 20); }
+            // Remove reading older than 10sec
+            var now = long.Parse(DateTimeOffset.UtcNow.AddSeconds(-10).ToUnixTimeMilliseconds().ToString().PadRight(16, '0'));
+            Tags.RemoveAll(x => long.Parse(x.LastSeenTimestampUTC.ToString()) < now);
 
             Tags = Tags.DistinctBy(x => x.EPC96).ToList(); // Remove duplicates
             Tags = Tags.OrderByDescending(x => x.PeakRSSI).ToList(); // Sort by closest tag

@@ -22,7 +22,5 @@ namespace RFID_tracking_API.Data {
         public DateTime LoanStart { get; set; }
 
         public DateTime LoanEnd { get; set; }
-
-
     }
 }

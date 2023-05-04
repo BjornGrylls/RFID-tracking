@@ -28,7 +28,6 @@ namespace RFID_tracking_web_MVC.Controllers {
                 "Weapons",
                 cacheEntry => {
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
-                    RestClient restClient = new RestClient("https://rfidtrackingapi20230502171130.azurewebsites.net", new HttpClient());
                     return restClient.WeaponsAllAsync().Result;
 
                 });
