@@ -1,0 +1,81 @@
+﻿@model IEnumerable<RFID_tracking_web_MVC.Weapon>
+
+<style>
+    @@keyframes slideInFromLeft {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes slideInFromRight {
+        0% {
+            transform: translateX(+100%);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
+    }
+</style>
+
+<div style='background: #@(ViewBag.inSafe ? "33C827" : "03FCE8");
+    animation: 0.2s ease-out 0s 1 @(ViewBag.inSafe ? "slideInFromRight" : "slideInFromLeft");'>
+
+    <h1 style="font-size:5vw">
+        <a asp-action="Home">⬅️</a>
+        @ViewData["Title"]
+    </h1>
+
+
+    <table class="table">
+        @*<thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.RegistrationNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FriendlyName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RfidTag)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th></th>
+            </tr>
+        </thead>*@
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    @*<td>
+                        @Html.DisplayFor(modelItem => item.RegistrationNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FriendlyName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RfidTag)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>*@
+                    <td class="d-flex justify-content-center" style="font-size:5vw">
+                        @{
+                            if (ViewBag.inSafe) {
+                                @Html.ActionLink(item.FriendlyName, "SpecifyUser", new { weaponId=item.Id })
+                            } else {
+                                @Html.ActionLink(item.FriendlyName, "ConfirmationIn", new { weaponId=item.Id })
+                            }
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

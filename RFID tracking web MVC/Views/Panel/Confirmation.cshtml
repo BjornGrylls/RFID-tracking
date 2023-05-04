@@ -1,0 +1,23 @@
+﻿@model RFID_tracking_web_MVC.Loan
+
+@{
+    ViewData["Title"] = "Confirmation";
+}
+
+
+<div>
+    <h1 class="d-flex justify-content-center" style="font-size:5vw">
+        @ViewBag.Weapon.FriendlyName
+        @if (ViewBag.Weapon.Status == WeaponStatus._1) {
+            <br />
+            <text>er nu i boksen</text>
+        } else {
+            <br />
+            <text>er nu udlånt til</text>
+            <br />
+            @ViewBag.Shooter.Name
+        }
+    </h1>
+    <a class="d-flex justify-content-center" style="font-size:5vw; color:#@(ViewBag.Weapon.Status == WeaponStatus._1 ? "33C827" : "03FCE8")" asp-action="Home">✅</a>
+</div>
+

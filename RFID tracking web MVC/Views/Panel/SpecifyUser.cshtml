@@ -1,0 +1,27 @@
+﻿@model IEnumerable<RFID_tracking_web_MVC.Models.RegularUsersViewModel>
+
+@{
+    ViewData["Title"] = "SpecifyUser";
+}
+<div style='background: #33C827'>
+
+    <h1 style="font-size:5vw">
+        <a asp-action="Home">⬅️</a>
+        @ViewBag.Weapon.FriendlyName udlånes til
+    </h1>
+
+    <table class="table">
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td class="d-flex justify-content-center" style="font-size:5vw">
+                        @Html.ActionLink(item.Shooter.Name, "Confirmation", new { userId=item.Shooter.Id, weaponId=item.Weapon.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+</div>
