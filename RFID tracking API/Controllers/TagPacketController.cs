@@ -41,8 +41,10 @@ namespace RFID_tracking_API.Controllers {
             formattedBody = Regex.Replace(formattedBody, "\\(", "");
             formattedBody = Regex.Replace(formattedBody, "L,\\)", "");
             formattedBody = Regex.Replace(formattedBody, ",\\)", "");
+            formattedBody = Regex.Replace(formattedBody, " b'", " '");
 
             var tagPacket = JsonConvert.DeserializeObject<List<Tag>>(formattedBody);
+            tagPacket.ForEach(x => x.LastSeenTimestampUTC = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString().PadRight(16, '0'));
 
             Tags.AddRange(tagPacket);
 

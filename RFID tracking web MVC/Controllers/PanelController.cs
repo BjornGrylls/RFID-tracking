@@ -20,6 +20,7 @@ namespace RFID_tracking_web_MVC.Controllers {
             HttpContext.Response.Headers.Add("refresh", "2; url=" + Url.Action("Home")); // Muy dirty
 
             RestClient restClient = new RestClient("https://rfidtrackingapi20230502171130.azurewebsites.net", new HttpClient());
+            // restClient.BaseUrl = "https://localhost:7098";
             var json = restClient.TagPacketGETAsync().Result;
             var scannedWeapons = JsonConvert.DeserializeObject<TagPacket>(json);
 
@@ -31,9 +32,57 @@ namespace RFID_tracking_web_MVC.Controllers {
                     return restClient.WeaponsAllAsync().Result;
 
                 });
-            ViewBag.Weapons = weapons;
+            //ViewBag.Weapons = weapons;
 
-            return View(scannedWeapons);
+            // Cache
+            var activeLoans = _memoryCache.GetOrCreate(
+                "ActiveLoans",
+                cacheEntry => {
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                    return restClient.LoansAllAsync().Result.Where(x => x.LoanEnd < x.LoanStart);
+                }).ToList();
+            //ViewBag.ActiveLoans = activeLoans;
+
+            // Cache
+            var activeShooters = _memoryCache.GetOrCreate(
+                "ActiveShooters",
+                cacheEntry => {
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                    return restClient.ShootersAllAsync().Result.Where(x => activeLoans.Any(y => y.ShooterId == x.Id));
+                });
+            //ViewBag.ActiveShooters = activeShooters;
+
+            PanelHomeViewModel panelHomeViewModel = new PanelHomeViewModel { list = new List<PanelHomeElement>() };
+
+            foreach (var tag in scannedWeapons.tags) {
+                Weapon weapon;
+                try {
+                    weapon = weapons.First(weapon => weapon.RfidTag == tag.EPC96);
+                } catch (Exception) {
+                    weapon = new Weapon { FriendlyName = "Ukendt!", Status = WeaponStatus._0 }; // Unknown RFID tag
+                }
+
+                // Er der et udlån at finde?
+                if (weapon.Status == WeaponStatus._2) {
+                    Loan loan = activeLoans.First(loan => loan.WeaponId == weapon.Id);
+                    Shooter shooter = activeShooters.First(shooter => shooter.Id == loan.ShooterId);
+
+                    panelHomeViewModel.list.Add(new PanelHomeElement {
+                        WeaponName = weapon.FriendlyName,
+                        ShooterName = shooter.Name,
+                        WeaponStatus = weapon.Status,
+                        WeaponId = weapon.Id,
+                    });
+                } else {
+                    panelHomeViewModel.list.Add(new PanelHomeElement {
+                        WeaponName = weapon.FriendlyName,
+                        WeaponStatus = weapon.Status,
+                        WeaponId = weapon.Id,
+                    });
+                }
+            }
+
+            return View(panelHomeViewModel);
         }
 
         [HttpGet("List/{inSafe:bool}")]

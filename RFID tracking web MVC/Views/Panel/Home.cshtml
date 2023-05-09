@@ -1,4 +1,4 @@
-﻿@model RFID_tracking_web_MVC.Models.TagPacket;
+﻿@model RFID_tracking_web_MVC.Models.PanelHomeViewModel;
 
 @{
     ViewData["Title"] = "Home";
@@ -13,46 +13,45 @@
             </p>
 
             <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.tags.First().EPC96)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.tags.First().PeakRSSI)
-                        </th>
-                        <th>Status</th>
-                        <th>Link</th>
-                    </tr>
-                </thead>
+                @*                <thead>
+                <tr>
+                <th>
+                @Html.DisplayNameFor(model => model.tags.First().EPC96)
+                </th>
+                <th>
+                @Html.DisplayNameFor(model => model.tags.First().PeakRSSI)
+                </th>
+                <th>Status</th>
+                <th>Link</th>
+                </tr>
+                </thead>*@
                 <tbody>
-                    @foreach (var item in Model.tags) {
-                        Weapon weapon;
-                        try {
-                            weapon = (ViewBag.Weapons as List<Weapon>).Where(x => x.RfidTag == item.EPC96).First();
-                        } catch (Exception) {
-                            weapon = new Weapon { FriendlyName = "Ukendt!", Status = WeaponStatus._0 }; // Unknown RFID tag
-                        }
-                        @if (weapon.Status != WeaponStatus._1) {
+                    @foreach (var item in Model.list) {
+                        @if (item.WeaponStatus != WeaponStatus._1) {
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.EPC96)
+                                @*                                <td>
+                        @Html.DisplayFor(modelItem => item.EPC96)
+                        </td>
+                        <td>
+                        @Html.DisplayFor(modelItem => item.PeakRSSI)
+                        </td>
+                        <td>
+                        @Html.DisplayFor(modelItem => weapon.Status)
+                        </td>*@
+                                <td class="align-middle">
+                                    @Html.DisplayFor(modelItem => item.ShooterName)
                                 </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PeakRSSI)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => weapon.Status)
-                                </td>
-                                <td>
+                                <td class="d-flex align-middle" style="font-size:5vw">
                                     @{
-                                        if (weapon.FriendlyName != "Ukendt!") {
-                                            @Html.ActionLink(weapon.FriendlyName, "ConfirmationIn", new { weaponId=weapon.Id })
+                                        if (item.WeaponName != "Ukendt!") {
+                                            @Html.ActionLink(item.WeaponName, "ConfirmationIn", new { weaponId=item.WeaponId })
                                         } else {
                                             <p>Ukendt!</p>
                                         }
                                     }
                                 </td>
+                                
+
                             </tr>
                         }
                     }
@@ -68,7 +67,7 @@
             </p>
 
             <table class="table">
-                <thead>
+@*                <thead>
                     <tr>
                         <th>
                             @Html.DisplayNameFor(model => model.tags.First().EPC96)
@@ -80,35 +79,30 @@
                         <th>Link</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var item in Model.tags) {
-                        Weapon weapon;
-                        try {
-                            weapon = (ViewBag.Weapons as List<Weapon>).Where(x => x.RfidTag == item.EPC96).First();
-                        } catch (Exception) {
-                            weapon = new Weapon { FriendlyName = "Ukendt!", Status = WeaponStatus._0 }; // Unknown RFID tag
-                        }
-                        @if (weapon.Status == WeaponStatus._1) {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.EPC96)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PeakRSSI)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => weapon.Status)
-                            </td>
-                            <td>
-                                @{
-                                    if (weapon.FriendlyName != "Ukendt!") {
-                                        @Html.ActionLink(weapon.FriendlyName, "SpecifyUser", new { weaponId=weapon.Id })
-                                    } else {
-                                        <p>Ukendt!</p>
+*@                <tbody>
+                    @foreach (var item in Model.list) {
+                        @if (item.WeaponStatus == WeaponStatus._1) {
+                            <tr>
+@*                                <td>
+                                    @Html.DisplayFor(modelItem => item.EPC96)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PeakRSSI)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => weapon.Status)
+                                </td>
+                        *@
+                                <td class="d-flex justify-content-center" style="font-size:5vw">
+                                    @{
+                                        if (item.WeaponName != "Ukendt!") {
+                                            @Html.ActionLink(item.WeaponName, "SpecifyUser", new { weaponId=item.WeaponId })
+                                        } else {
+                                            <p>Ukendt!</p>
+                                        }
                                     }
-                                }
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                         }
                     }
                 </tbody>
