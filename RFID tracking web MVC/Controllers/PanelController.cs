@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NuGet.Protocol.Core.Types;
 using RFID_tracking_web_MVC.Models;
 using System.Runtime.CompilerServices;
 using static System.Net.WebRequestMethods;
@@ -15,9 +16,13 @@ namespace RFID_tracking_web_MVC.Controllers {
             _memoryCache = memoryCache;
         }
 
-        public IActionResult Home() {
+        public IActionResult Index() {
+            var res = Home() as PartialViewResult;
+            var homeTabels = res.Model as PanelHomeViewModel;
+            return View(homeTabels);
+        }
 
-            HttpContext.Response.Headers.Add("refresh", "2; url=" + Url.Action("Home")); // Muy dirty
+        public IActionResult Home() {
 
             RestClient restClient = new RestClient("https://rfidtrackingapi20230502171130.azurewebsites.net", new HttpClient());
             // restClient.BaseUrl = "https://localhost:7098";
@@ -32,7 +37,6 @@ namespace RFID_tracking_web_MVC.Controllers {
                     return restClient.WeaponsAllAsync().Result;
 
                 });
-            //ViewBag.Weapons = weapons;
 
             // Cache
             var activeLoans = _memoryCache.GetOrCreate(
@@ -41,7 +45,6 @@ namespace RFID_tracking_web_MVC.Controllers {
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
                     return restClient.LoansAllAsync().Result.Where(x => x.LoanEnd < x.LoanStart);
                 }).ToList();
-            //ViewBag.ActiveLoans = activeLoans;
 
             // Cache
             var activeShooters = _memoryCache.GetOrCreate(
@@ -50,7 +53,6 @@ namespace RFID_tracking_web_MVC.Controllers {
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
                     return restClient.ShootersAllAsync().Result.Where(x => activeLoans.Any(y => y.ShooterId == x.Id));
                 });
-            //ViewBag.ActiveShooters = activeShooters;
 
             PanelHomeViewModel panelHomeViewModel = new PanelHomeViewModel { list = new List<PanelHomeElement>() };
 
@@ -82,18 +84,18 @@ namespace RFID_tracking_web_MVC.Controllers {
                 }
             }
 
-            return View(panelHomeViewModel);
+            return PartialView("HomeTabels", panelHomeViewModel);
         }
 
         [HttpGet("List/{inSafe:bool}")]
         public IActionResult List(bool inSafe) {
+            RestClient restClient = new RestClient("https://rfidtrackingapi20230502171130.azurewebsites.net", new HttpClient());
 
             // Cache
             var weapons = _memoryCache.GetOrCreate(
                 "Weapons" + inSafe,
                 cacheEntry => {
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
-                    RestClient restClient = new RestClient("https://rfidtrackingapi20230502171130.azurewebsites.net", new HttpClient());
                     var allWeapons = restClient.WeaponsAllAsync().Result;
 
                     if (inSafe) {
@@ -104,10 +106,51 @@ namespace RFID_tracking_web_MVC.Controllers {
 
                 });
 
+            // Cache
+            var activeLoans = _memoryCache.GetOrCreate(
+                "ActiveLoans",
+                cacheEntry => {
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                    return restClient.LoansAllAsync().Result.Where(x => x.LoanEnd < x.LoanStart);
+                }).ToList();
+
+            // Cache
+            var activeShooters = _memoryCache.GetOrCreate(
+                "ActiveShooters",
+                cacheEntry => {
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                    return restClient.ShootersAllAsync().Result.Where(x => activeLoans.Any(y => y.ShooterId == x.Id));
+                });
+
+            PanelHomeViewModel panelHomeViewModel = new PanelHomeViewModel { list = new List<PanelHomeElement>() };
+
+            foreach (var weapon in weapons) {
+
+                // Er der et udlån at finde?
+                if (weapon.Status == WeaponStatus._2) {
+                    Loan loan = activeLoans.First(loan => loan.WeaponId == weapon.Id);
+                    Shooter shooter = activeShooters.First(shooter => shooter.Id == loan.ShooterId);
+
+                    panelHomeViewModel.list.Add(new PanelHomeElement {
+                        WeaponName = weapon.FriendlyName,
+                        ShooterName = shooter.Name,
+                        WeaponStatus = weapon.Status,
+                        WeaponId = weapon.Id,
+                    });
+                } else {
+                    panelHomeViewModel.list.Add(new PanelHomeElement {
+                        WeaponName = weapon.FriendlyName,
+                        WeaponStatus = weapon.Status,
+                        WeaponId = weapon.Id,
+                    });
+                }
+            }
+
+
             ViewData["Title"] = inSafe ? "På vej ud af boksen" : "På vej ind i boksen";
             ViewBag.inSafe = inSafe;
 
-            return View(weapons);
+            return View(panelHomeViewModel);
         }
 
         [HttpGet("SpecifyUser/{weaponId:Guid}")]

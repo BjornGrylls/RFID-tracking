@@ -2,3 +2,6 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+$(function () {
+    setInterval(function () { $('#tabels').load('/Panel/Home'); }, 500);
+});

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RFID_tracking_web_MVC.Models.RegularUsersViewModel>
+﻿@model List<RFID_tracking_web_MVC.Models.RegularUsersViewModel>
 
 @{
     ViewData["Title"] = "SpecifyUser";
@@ -6,21 +6,43 @@
 <div style='background: #33C827'>
 
     <h1 style="font-size:5vw">
-        <a asp-action="Home">⬅️</a>
+        <a asp-action="Index" style="text-decoration:none">⬅️</a>
         @ViewBag.Weapon.FriendlyName udlånes til
     </h1>
 
-    <table class="table">
-        <tbody>
-            @foreach (var item in Model) {
-                <tr>
-                    <td class="d-flex justify-content-center" style="font-size:5vw">
-                        @Html.ActionLink(item.Shooter.Name, "Confirmation", new { userId=item.Shooter.Id, weaponId=item.Weapon.Id })
-                    </td>
-                </tr>
+    @foreach (var item in Model) {
+
+    }
+
+
+    @for (int i = 0; i < Model.Count(); i += 2) {
+        <div class="row">
+            @{
+                var item = Model[i];
             }
-        </tbody>
-    </table>
+            <div class="bg-white m-4 mx-5 p-3 d-flex justify-content-center col" style="border-radius: 15px">
+
+                <div class="align-self-start text-center ">
+                    @Html.ActionLink(item.Shooter.Name, "Confirmation", new { userId=item.Shooter.Id, weaponId=item.Weapon.Id }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
+                </div>
+            </div>
+
+            @if (Model.Count() != i + 1) {
+                item = Model[i + 1];
+                <div class="bg-white m-4 mx-5 p-3 d-flex justify-content-center col" style="border-radius: 15px">
+
+                    <div class="align-self-start text-center ">
+                        @Html.ActionLink(item.Shooter.Name, "Confirmation", new { userId=item.Shooter.Id, weaponId=item.Weapon.Id }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
+                    </div>
+                </div>
+            } else {
+                <div class="col m-4 mx-5 p-3">
+                </div>
+            }
+
+        </div>
+
+    }
 
 
 

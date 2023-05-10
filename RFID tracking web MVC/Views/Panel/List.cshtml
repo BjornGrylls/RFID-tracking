@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RFID_tracking_web_MVC.Weapon>
+﻿@model RFID_tracking_web_MVC.Models.PanelHomeViewModel;
 
 <style>
     @@keyframes slideInFromLeft {
@@ -22,60 +22,55 @@
     }
 </style>
 
-<div style='background: #@(ViewBag.inSafe ? "33C827" : "03FCE8");
+<div class="p-5" style='background: #@(ViewBag.inSafe ? "33C827" : "274CC8");
     animation: 0.2s ease-out 0s 1 @(ViewBag.inSafe ? "slideInFromRight" : "slideInFromLeft");'>
 
     <h1 style="font-size:5vw">
-        <a asp-action="Home">⬅️</a>
+        <a asp-action="Index" style="text-decoration:none">⬅️</a>
         @ViewData["Title"]
     </h1>
-
-
-    <table class="table">
-        @*<thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.RegistrationNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FriendlyName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.RfidTag)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Status)
-                </th>
-                <th></th>
-            </tr>
-        </thead>*@
-        <tbody>
-            @foreach (var item in Model) {
-                <tr>
-                    @*<td>
-                        @Html.DisplayFor(modelItem => item.RegistrationNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FriendlyName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RfidTag)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </td>*@
-                    <td class="d-flex justify-content-center" style="font-size:5vw">
-                        @{
-                            if (ViewBag.inSafe) {
-                                @Html.ActionLink(item.FriendlyName, "SpecifyUser", new { weaponId=item.Id })
-                            } else {
-                                @Html.ActionLink(item.FriendlyName, "ConfirmationIn", new { weaponId=item.Id })
-                            }
-                        }
-
-                    </td>
-                </tr>
+    @for (int i = 0; i < Model.list.Count; i += 2) {
+        <div class="row">
+            @{
+                var item = Model.list[i];
             }
-        </tbody>
-    </table>
+            <div class="bg-white m-4 mx-5 p-3 d-flex justify-content-center col" style="border-radius: 15px">
+
+                <div class="align-self-start text-center ">
+                    @if (ViewBag.inSafe) {
+                        @Html.ActionLink(item.WeaponName, "SpecifyUser", new { weaponId=item.WeaponId }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
+                    } else {
+                        @Html.ActionLink(item.WeaponName, "ConfirmationIn", new { weaponId=item.WeaponId }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
+                        <div>
+                            @Html.DisplayFor(modelItem => item.ShooterName)
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.list.Count != i + 1) {
+                item = Model.list[i + 1];
+                <div class="bg-white m-4 mx-5 p-3 d-flex justify-content-center col" style="border-radius: 15px">
+
+                    <div class="align-self-start text-center ">
+                        @if (ViewBag.inSafe) {
+                            @Html.ActionLink(item.WeaponName, "SpecifyUser", new { weaponId=item.WeaponId }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
+                        } else {
+                            @Html.ActionLink(item.WeaponName, "ConfirmationIn", new { weaponId=item.WeaponId }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
+                            <div>
+                                @Html.DisplayFor(modelItem => item.ShooterName)
+                            </div>
+                        }
+                    </div>
+                </div>
+            } else {
+                <div class="col m-4 mx-5 p-3">
+
+                </div>
+            }
+
+        </div>
+
+    }
+
 </div>
