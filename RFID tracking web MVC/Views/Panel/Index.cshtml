@@ -4,8 +4,43 @@
 }
 
 <div class="container; w-100">
-    <div id="tabels">
-        @Html.Partial("HomeTabels", Model)
+    <div class="row">
+        <div class="col-sm mx-2 p-3" style='background: #274CC8'>
+
+            <div class="row mt-2 text-white">
+                <div class="col-2">
+                    <a asp-action="List" asp-route-inSafe="False">
+                        <i class="fa-regular fa-rectangle-list text-white m-2" style="font-size:3vw"></i>
+                    </a>
+                </div>
+                <div class="col">
+                    <h1 class="" style="font-size:3vw" ">På vej ind i boksen</h1>
+                </div>
+            </div>
+
+            <div id="tabels">
+                    @Html.Partial("HomeTabels", Model.list.Where(x => x.WeaponStatus != WeaponStatus._1))
+            </div>
+        </div>
+        <div class="col-sm mx-2 p-3" style='background: #33C827'>
+
+            <div class="row mt-2 text-white">
+                <div class="col">
+                    <h1 class="d-flex justify-content-end" style="font-size:3vw" ">På vej ud af boksen</h1>
+                </div>
+                <div class="col-2 ">
+                    <a asp-action="List" asp-route-inSafe="True">
+                        <i class="fa-regular fa-rectangle-list text-white m-2" style="font-size:3vw"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <div id="tabels">
+                @Html.Partial("HomeTabels", Model.list.Where(x => x.WeaponStatus == WeaponStatus._1))
+            </div>
+        </div>
     </div>
 </div>
 
+<script src="https://kit.fontawesome.com/4dc74b3398.js" crossorigin="anonymous"></script>

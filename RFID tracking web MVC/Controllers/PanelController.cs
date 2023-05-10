@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Protocol.Core.Types;
@@ -9,7 +10,6 @@ using static System.Net.WebRequestMethods;
 
 namespace RFID_tracking_web_MVC.Controllers {
     public class PanelController : Controller {
-
         private readonly IMemoryCache _memoryCache;
 
         public PanelController(IMemoryCache memoryCache) {
@@ -66,8 +66,13 @@ namespace RFID_tracking_web_MVC.Controllers {
 
                 // Er der et udlån at finde?
                 if (weapon.Status == WeaponStatus._2) {
-                    Loan loan = activeLoans.First(loan => loan.WeaponId == weapon.Id);
-                    Shooter shooter = activeShooters.First(shooter => shooter.Id == loan.ShooterId);
+                    Shooter shooter;
+                    try {
+                        Loan loan = activeLoans.First(loan => loan.WeaponId == weapon.Id);
+                        shooter = activeShooters.First(shooter => shooter.Id == loan.ShooterId);
+                    } catch (Exception) {
+                        shooter = new Shooter { Name = "" };
+                    }
 
                     panelHomeViewModel.list.Add(new PanelHomeElement {
                         WeaponName = weapon.FriendlyName,
@@ -154,30 +159,54 @@ namespace RFID_tracking_web_MVC.Controllers {
         }
 
         [HttpGet("SpecifyUser/{weaponId:Guid}")]
-        public IActionResult SpecifyUser(Guid weaponId) {
+        public IActionResult SpecifyUser(Guid weaponId, string searchString = "") {
             RestClient restClient = new RestClient("https://rfidtrackingapi20230502171130.azurewebsites.net", new HttpClient());
             var weapon = restClient.WeaponsGETAsync(weaponId).Result;
-
-            // Cache
-            var regularUsers = _memoryCache.GetOrCreate(
-                "RegularUsers" + weaponId,
-                cacheEntry => {
-                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
-                    var regularUsers = restClient.RegularUsersAllAsync().Result.Where(x => x.WeaponId == weaponId);
-                    var shooters = restClient.ShootersAllAsync().Result;
-
-                    var list = new List<RegularUsersViewModel>();
-                    foreach (var item in regularUsers) {
-                        list.Add(new RegularUsersViewModel {
-                            Weapon = weapon,
-                            Shooter = shooters.Where(x => x.Id == item.UserId).First()
-                        });
-                    }
-
-                    return list;
-                });
-
             ViewBag.Weapon = weapon;
+
+            List<RegularUsersViewModel> regularUsers = new List<RegularUsersViewModel>();
+
+            // Are we searching?
+            if (!(String.IsNullOrEmpty(searchString))) {
+                // Yes 
+
+                var shooters = restClient.ShootersAllAsync().Result.Where(x =>
+                    x.ShooterId.ToString().Contains(searchString) ||
+                    x.Name.Contains(searchString)
+                );
+
+                foreach (var item in shooters) {
+                    regularUsers.Add(new RegularUsersViewModel {
+                        Weapon = weapon,
+                        Shooter = item
+                    });
+                }
+
+            } else {
+                // No
+
+                // Cache
+                regularUsers = _memoryCache.GetOrCreate(
+                    "RegularUsers" + weaponId,
+                    cacheEntry => {
+                        cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                        var regularUsers = restClient.RegularUsersAllAsync().Result.Where(x => x.WeaponId == weaponId);
+                        var shooters = restClient.ShootersAllAsync().Result;
+
+                        var list = new List<RegularUsersViewModel>();
+                        foreach (var item in regularUsers) {
+                            list.Add(new RegularUsersViewModel {
+                                Weapon = weapon,
+                                Shooter = shooters.Where(x => x.Id == item.UserId).First()
+                            });
+                        }
+
+                        return list;
+                    });
+            }
+
+
+
 
             return View(regularUsers);
         }
@@ -213,9 +242,7 @@ namespace RFID_tracking_web_MVC.Controllers {
             inSafe = false;
 
             // Clear cache
-            _memoryCache.Remove("Weapons");
-            _memoryCache.Remove("Weapons" + true);
-            _memoryCache.Remove("Weapons" + false);
+            ClearCache();
 
             // Update weapon status
             restClient.WeaponsPUTAsync(weaponId, weapon).Wait();
@@ -255,14 +282,19 @@ namespace RFID_tracking_web_MVC.Controllers {
             restClient.WeaponsPUTAsync(weaponId, weapon);
 
             // Clear cache
-            _memoryCache.Remove("Weapons");
-            _memoryCache.Remove("Weapons" + true);
-            _memoryCache.Remove("Weapons" + false);
+            ClearCache();
 
             ViewBag.Weapon = weapon;
             ViewBag.Shooter = new Shooter { Name = "Fejl" };
 
             return View("Confirmation", loan);
         }
-    }
+    private void ClearCache() {
+            _memoryCache.Remove("Weapons");
+            _memoryCache.Remove("Weapons" + true);
+            _memoryCache.Remove("Weapons" + false);
+            _memoryCache.Remove("ActiveLoans");
+            _memoryCache.Remove("ActiveShooters");
+        }
+    }   
 }

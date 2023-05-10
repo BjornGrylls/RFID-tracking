@@ -3,16 +3,12 @@
 @{
     ViewData["Title"] = "SpecifyUser";
 }
-<div style='background: #33C827'>
+<div class="p-5" style='background: #33C827'>
 
     <h1 style="font-size:5vw">
         <a asp-action="Index" style="text-decoration:none">⬅️</a>
         @ViewBag.Weapon.FriendlyName udlånes til
     </h1>
-
-    @foreach (var item in Model) {
-
-    }
 
 
     @for (int i = 0; i < Model.Count(); i += 2) {
@@ -44,6 +40,14 @@
 
     }
 
+    <div class="bg-white m-4 mx-5 p-3 d-flex justify-content-center col" style="border-radius: 15px">
 
+        @using (Html.BeginForm("SpecifyUser", "Panel", FormMethod.Get, new { weaponId = (ViewBag.Weapon as Weapon).Id })) {
+            <p>
+                Søg skyttenummer eller navn: @Html.TextBox("searchString")
+                <input type="submit" value="Search" />
+            </p>
+        }
+    </div>
 
 </div>

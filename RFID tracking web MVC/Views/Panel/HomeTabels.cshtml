@@ -1,78 +1,46 @@
-﻿@model RFID_tracking_web_MVC.Models.PanelHomeViewModel;
+﻿@model IEnumerable<RFID_tracking_web_MVC.Models.PanelHomeElement>;
 
-<div class="row">
-    <div class="col-sm mx-2 p-3" style='background: #274CC8'>
 
-        <div class="row mt-2 text-white">
-            <div class="col-2">
-                <a asp-action="List" asp-route-inSafe="False">
-                    <i class="fa-regular fa-rectangle-list text-white m-2" style="font-size:3vw"></i>
-                </a>
+@foreach (var item in Model) {
+    @if (item.WeaponStatus != WeaponStatus._1) {
+        if (item.WeaponName == "Ukendt!") {
+            <div class=" bg-white m-5 p-3 d-flex justify-content-center" style="border-radius: 15px">
+                <div style="font-size:3vw">Ukendt!</div>
             </div>
-            <div class="col">
-                <h1 class="" style="font-size:3vw" ">På vej ind i boksen</h1>
+        } else {
+
+            <div class="bg-white m-5 p-3 d-flex justify-content-center " style="border-radius: 15px">
+
+                <div class="align-self-start text-center ">
+                    @Html.ActionLink(item.WeaponName, "ConfirmationIn", new { weaponId=item.WeaponId }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
+                    <div>
+                        @Html.DisplayFor(modelItem => item.ShooterName)
+                    </div>
+                </div>
             </div>
-        </div>
-
-        @foreach (var item in Model.list) {
-            @if (item.WeaponStatus != WeaponStatus._1) {
-                if (item.WeaponName == "Ukendt!") {
-                    <div class=" bg-white m-5 p-3 d-flex justify-content-center" style="border-radius: 15px">
-                        <div style="font-size:3vw">Ukendt!</div>
-                    </div>
-                } else {
-
-                    <div class="bg-white m-5 p-3 d-flex justify-content-center " style="border-radius: 15px">
-
-                        <div class="align-self-start text-center ">
-                            @Html.ActionLink(item.WeaponName, "ConfirmationIn", new { weaponId=item.WeaponId }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
-                            <div>
-                                @Html.DisplayFor(modelItem => item.ShooterName)
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
         }
+    }
+}
 
-    </div>
-    <div class="col-sm mx-2 p-3" style='background: #33C827'>
 
-        <div class="row mt-2 text-white">
-            <div class="col">
-                <h1 class="d-flex justify-content-end" style="font-size:3vw" ">På vej ud af boksen</h1>
+@foreach (var item in Model) {
+    @if (item.WeaponStatus == WeaponStatus._1) {
+        if (item.WeaponName == "Ukendt!") {
+            <div class=" bg-white m-5 p-3 d-flex justify-content-center" style="border-radius: 15px">
+                <div style="font-size:3vw">Ukendt!</div>
             </div>
-            <div class="col-2 ">
-                <a asp-action="List" asp-route-inSafe="True">
-                    <i class="fa-regular fa-rectangle-list text-white m-2" style="font-size:3vw"></i>
-                </a>
+        } else {
+
+            <div class="bg-white m-5 p-3 d-flex justify-content-center " style="border-radius: 15px">
+
+                <div class="align-self-start text-center ">
+                    @Html.ActionLink(item.WeaponName, "SpecifyUser", new { weaponId=item.WeaponId }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
+                    <div>
+                        @Html.DisplayFor(modelItem => item.ShooterName)
+                    </div>
+                </div>
             </div>
-
-        </div>
-
-        @foreach (var item in Model.list) {
-            @if (item.WeaponStatus == WeaponStatus._1) {
-                if (item.WeaponName == "Ukendt!") {
-                    <div class=" bg-white m-5 p-3 d-flex justify-content-center" style="border-radius: 15px">
-                        <div style="font-size:3vw">Ukendt!</div>
-                    </div>
-                } else {
-
-                    <div class="bg-white m-5 p-3 d-flex justify-content-center " style="border-radius: 15px">
-
-                        <div class="align-self-start text-center ">
-                            @Html.ActionLink(item.WeaponName, "SpecifyUser", new { weaponId=item.WeaponId }, new { @style="font-size:3vw; text-decoration:none", @class="text-black align-self-start" })
-                            <div>
-                                @Html.DisplayFor(modelItem => item.ShooterName)
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
         }
+    }
+}
 
-    </div>
-</div>
-
-
-<script src="https://kit.fontawesome.com/4dc74b3398.js" crossorigin="anonymous"></script>
