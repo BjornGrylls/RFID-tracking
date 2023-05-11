@@ -1,0 +1,68 @@
+﻿@model IEnumerable<RFID_tracking_web_MVC.Models.ActiveLoansViewModel>
+
+@{
+    ViewData["Title"] = "Aktive udlån";
+}
+
+<h1>Aktive udlån</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WeaponName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WeaponRegId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShooterName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShooterAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShooterBirthday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShooterShownId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NameOfDirectorWhoAcceptedId)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.LoanStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WeaponName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WeaponRegId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShooterName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShooterAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShooterBirthday.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShooterShownId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NameOfDirectorWhoAcceptedId)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

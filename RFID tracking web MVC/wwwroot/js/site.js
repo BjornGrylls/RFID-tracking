@@ -5,4 +5,5 @@
 $(function () {
     setInterval(function () { $('#tabelsIn').load('/Panel/HomeIn'); }, 500);
     setInterval(function () { $('#tabelsOut').load('/Panel/HomeOut'); }, 500);
+    setInterval(function () { $('#table').load('/LiveReader/Table'); }, 500);
 });

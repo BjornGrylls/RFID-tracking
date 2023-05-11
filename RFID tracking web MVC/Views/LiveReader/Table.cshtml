@@ -1,0 +1,26 @@
+﻿@model IEnumerable<RFID_tracking_web_MVC.Models.Tag>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EPC96)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PeakRSSI)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EPC96)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PeakRSSI)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

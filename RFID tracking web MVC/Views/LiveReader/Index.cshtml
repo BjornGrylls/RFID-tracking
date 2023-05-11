@@ -1,0 +1,15 @@
+﻿@model IEnumerable<RFID_tracking_web_MVC.Models.Tag>
+
+@{
+    ViewData["Title"] = "Live tags";
+}
+
+<h1>Live tags</h1>
+
+
+<div id="tabel">
+    @Html.Partial("Table", Model)
+</div>
+
+
+
