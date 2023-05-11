@@ -1,0 +1,87 @@
+﻿@model IEnumerable<RFID_tracking_web_MVC.Shooter>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MailAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShooterId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Birthday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPictureIdShown)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DirectorAcceptedPictureId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            Director director;
+            try {
+                director = (ViewBag.Directors as List<Director>).First(x => x.Id == item.DirectorAcceptedPictureId);
+            } catch (Exception) {
+                director = new Director { Name = "Not found" };
+            }
+
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MailAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShooterId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Birthday.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsPictureIdShown)
+                </td>
+                <td>
+                    @if (item.IsPictureIdShown) {
+                        @Html.DisplayFor(modelItem => director.Name)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id=item.Id }) |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
