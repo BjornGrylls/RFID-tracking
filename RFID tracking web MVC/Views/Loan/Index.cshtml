@@ -36,33 +36,33 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LoanStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WeaponName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WeaponRegId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShooterName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShooterAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShooterBirthday.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShooterShownId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NameOfDirectorWhoAcceptedId)
-            </td>
-        </tr>
-}
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LoanStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WeaponName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WeaponRegId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShooterName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShooterAddress)
+                </td>
+                <td>
+                    @item.ShooterBirthday.Date.ToShortDateString()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShooterShownId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NameOfDirectorWhoAcceptedId)
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

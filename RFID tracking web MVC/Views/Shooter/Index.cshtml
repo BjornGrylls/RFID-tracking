@@ -63,7 +63,7 @@
                     @Html.DisplayFor(modelItem => item.ShooterId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Birthday.Date)
+                    @item.Birthday.Date.ToShortDateString()
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsPictureIdShown)
