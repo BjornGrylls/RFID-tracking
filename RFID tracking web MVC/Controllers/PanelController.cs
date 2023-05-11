@@ -18,8 +18,19 @@ namespace RFID_tracking_web_MVC.Controllers {
 
         public IActionResult Index() {
             var res = Home() as PartialViewResult;
-            var homeTabels = res.Model as PanelHomeViewModel;
+            var homeTabels = res.Model as IEnumerable<PanelHomeElement>;
             return View(homeTabels);
+        }
+
+        public IActionResult HomeIn() {
+            var res = Home() as PartialViewResult;
+            var homeTabels = res.Model as IEnumerable<PanelHomeElement>;
+            return PartialView("HomeTabels", homeTabels.Where(x => x.WeaponStatus != WeaponStatus._1));
+        }
+        public IActionResult HomeOut() {
+            var res = Home() as PartialViewResult;
+            var homeTabels = res.Model as IEnumerable<PanelHomeElement>;
+            return PartialView("HomeTabels", homeTabels.Where(x => x.WeaponStatus == WeaponStatus._1));
         }
 
         public IActionResult Home() {
@@ -89,7 +100,7 @@ namespace RFID_tracking_web_MVC.Controllers {
                 }
             }
 
-            return PartialView("HomeTabels", panelHomeViewModel);
+            return PartialView("HomeTabels", panelHomeViewModel.list);
         }
 
         [HttpGet("List/{inSafe:bool}")]

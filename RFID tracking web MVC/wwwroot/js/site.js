@@ -3,5 +3,6 @@
 
 // Write your JavaScript code.
 $(function () {
-    setInterval(function () { $('#tabels').load('/Panel/Home'); }, 500);
+    setInterval(function () { $('#tabelsIn').load('/Panel/HomeIn'); }, 500);
+    setInterval(function () { $('#tabelsOut').load('/Panel/HomeOut'); }, 500);
 });

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<RFID_tracking_web_MVC.Weapon>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RegistrationNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FriendlyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RfidTag)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegistrationNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FriendlyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RfidTag)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
+                    @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new {  id=item.Id }) |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

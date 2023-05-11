@@ -1,11 +1,11 @@
-﻿@model RFID_tracking_web_MVC.Models.PanelHomeViewModel;
+﻿@model List<RFID_tracking_web_MVC.Models.PanelHomeElement>;
 @{
     ViewData["Title"] = "Home";
 }
 
-<div class="container; w-100">
+<div class="container-fluid w-100">
     <div class="row">
-        <div class="col-sm mx-2 p-3" style='background: #274CC8'>
+        <div class="col mx-2 p-3 min-vh-100" style='background: #274CC8'>
 
             <div class="row mt-2 text-white">
                 <div class="col-2">
@@ -14,19 +14,19 @@
                     </a>
                 </div>
                 <div class="col">
-                    <h1 class="" style="font-size:3vw" ">På vej ind i boksen</h1>
+                    <h1 class="text-center" style="font-size:3vw" ">På vej ind i boksen</h1>
                 </div>
             </div>
 
-            <div id="tabels">
-                    @Html.Partial("HomeTabels", Model.list.Where(x => x.WeaponStatus != WeaponStatus._1))
+            <div id="tabelsIn">
+                    @Html.Partial("HomeTabels", Model.Where(x => x.WeaponStatus != WeaponStatus._1))
             </div>
         </div>
-        <div class="col-sm mx-2 p-3" style='background: #33C827'>
+        <div class="col mx-2 p-3 min-vh-100" style='background: #33C827;'>
 
             <div class="row mt-2 text-white">
                 <div class="col">
-                    <h1 class="d-flex justify-content-end" style="font-size:3vw" ">På vej ud af boksen</h1>
+                    <h1 class="text-center" style="font-size:2.9vw" ">På vej ud af boksen</h1> 
                 </div>
                 <div class="col-2 ">
                     <a asp-action="List" asp-route-inSafe="True">
@@ -36,8 +36,8 @@
 
             </div>
 
-            <div id="tabels">
-                @Html.Partial("HomeTabels", Model.list.Where(x => x.WeaponStatus == WeaponStatus._1))
+            <div id="tabelsOut">
+                @Html.Partial("HomeTabels", Model.Where(x => x.WeaponStatus == WeaponStatus._1))
             </div>
         </div>
     </div>

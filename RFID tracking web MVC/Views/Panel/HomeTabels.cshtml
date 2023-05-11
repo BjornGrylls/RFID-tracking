@@ -4,9 +4,9 @@
 @foreach (var item in Model) {
     @if (item.WeaponStatus != WeaponStatus._1) {
         if (item.WeaponName == "Ukendt!") {
-            <div class=" bg-white m-5 p-3 d-flex justify-content-center" style="border-radius: 15px">
+            @*<div class=" bg-white m-5 p-3 d-flex justify-content-center" style="border-radius: 15px">
                 <div style="font-size:3vw">Ukendt!</div>
-            </div>
+            </div>*@
         } else {
 
             <div class="bg-white m-5 p-3 d-flex justify-content-center " style="border-radius: 15px">
@@ -26,9 +26,9 @@
 @foreach (var item in Model) {
     @if (item.WeaponStatus == WeaponStatus._1) {
         if (item.WeaponName == "Ukendt!") {
-            <div class=" bg-white m-5 p-3 d-flex justify-content-center" style="border-radius: 15px">
+            @*<div class=" bg-white m-5 p-3 d-flex justify-content-center" style="border-radius: 15px">
                 <div style="font-size:3vw">Ukendt!</div>
-            </div>
+            </div>*@
         } else {
 
             <div class="bg-white m-5 p-3 d-flex justify-content-center " style="border-radius: 15px">
