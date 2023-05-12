@@ -45,7 +45,7 @@
         @using (Html.BeginForm("SpecifyUser", "Panel", FormMethod.Get, new { weaponId = (ViewBag.Weapon as Weapon).Id })) {
             <p>
                 Søg skyttenummer eller navn: @Html.TextBox("searchString")
-                <input type="submit" value="Search" />
+                <input type="submit" value="Søg" />
             </p>
         }
     </div>
